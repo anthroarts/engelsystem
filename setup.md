@@ -72,9 +72,9 @@ http://ec2-??-???-???-???.compute-1.amazonaws.com:8080/login.
 
 4. Your old password remains `asdfasdf`. Enter a new password, then click "Save".
 
-5. Click on the "Gofurs" menu in the middle of the top of the screen. Choose "Gofur types".
+5. Click on the "Volunteers" menu in the middle of the top of the screen. Choose "Volunteer types".
 
-6. Click on the + to the right of the word "Gofurtypes". You will want 2 types: "Gofur" and "Requestor".
+6. Click on the + to the right of the word "Volunteer types". You will be setting up types for each area which can take a volunteer.
 
 7. Click on the "Shift" menu in the middle of the top of the screen. Choose "Shift types".
 

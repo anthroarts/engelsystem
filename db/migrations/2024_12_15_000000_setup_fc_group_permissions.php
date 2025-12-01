@@ -6,6 +6,7 @@ namespace Engelsystem\Migrations;
 
 use Engelsystem\Database\Migration\Migration;
 use Illuminate\Database\Connection;
+use Exception;
 use Illuminate\Database\Schema\Builder as SchemaBuilder;
 
 // The following groups currently exist
@@ -20,6 +21,8 @@ use Illuminate\Database\Schema\Builder as SchemaBuilder;
 // Voucher Angel
 // Welcome Angel
 
+// At present, the group rights are desync'ed from this file.  As such, disabling the file's
+// control over permissions.  
 class SetupFcGroupPermissions extends Migration
 {
     protected Connection $db;
@@ -42,18 +45,24 @@ class SetupFcGroupPermissions extends Migration
         // The only exception is for Guest (not logged in user) which is mutually exclusive with Gofur.
         // And Developer, which if we don't give it admin_users permission we can lock ourselves out.
 
-        $this->upAngelGroup();
-        $this->upShiftCoordinator();
-        $this->upBureaucrat();
-        $this->upGoodieManager();
-        $this->upVoucherAngel();
-        $this->upWelcomeAngel();
-        $this->upGuest();
-        $this->upDeveloper();
+        // Disable all permission setting for now - Gil
+//         $this->upAngelGroup();
+//         $this->upShiftCoordinator();
+//         $this->upBureaucrat();
+//         $this->upGoodieManager();
+//         $this->upVoucherAngel();
+//         $this->upWelcomeAngel();
+//         $this->upGuest();
+//         $this->upDeveloper();
 
         // The following privilege are not set anywhere
         // faq.edit, faq.view, news_comments, question.add, question.edit,
         // user.goodie.edit, user_meetings, user_messages, voucher.edit
+
+        // We are going to rename unused_1 to Admin, though
+        $this->renameGroup("unused_1", "Admin");
+        // And GoFur to Volunteer
+        $this->removeGroupPrivilege("GoFur", "Volunteer")
     }
 
     private function upAngelGroup(): void

@@ -308,7 +308,7 @@ msgid "settings.profile.pronoun"
 msgstr "Pronoun"
 
 msgid "settings.profile.pronoun.info"
-msgstr "Will be shown on your profile page and in gofur lists."
+msgstr "Will be shown on your profile page and in volunteer lists."
 
 msgid "settings.profile.firstname"
 msgstr "First name"
@@ -354,7 +354,7 @@ msgid "settings.profile.email_messages"
 msgstr "Notify me on new private messages."
 
 msgid "settings.profile.email_by_human_allowed"
-msgstr "Allow gofur leads to contact you by e-mail."
+msgstr "Allow volunteer leads to contact you by e-mail."
 
 msgid "settings.profile.email_goodie"
 msgstr "To possibly receive vouchers for the next similar event, I consent "
@@ -382,7 +382,7 @@ msgid "settings.profile.shirt.link"
 msgstr "More information"
 
 msgid "settings.profile.angeltypes.info"
-msgstr "You can manage your gofur types <a href=\"%s\">on the gofur types page</a>."
+msgstr "You can manage your volunteer types <a href=\"%s\">on the volunteer types page</a>."
 
 msgid "profile.my_shifts"
 msgstr "My shifts"
@@ -511,22 +511,22 @@ msgid "angeltype.ifsg.own"
 msgstr "My health instruction"
 
 msgid "angeltype.ifsg.required.info.preview"
-msgstr "This gofur type requires a health instruction."
+msgstr "This volunteer type requires a health instruction."
 
 msgid "angeltype.ifsg.required.info"
-msgstr "This gofur type requires a health instruction. Please enter your health instruction information!"
+msgstr "This volunteer type requires a health instruction. Please enter your health instruction information!"
 
 msgid "angeltype.ifsg.required.info.here"
-msgstr "You joined an gofur type which requires a health instruction. "
+msgstr "You joined an volunteer type which requires a health instruction. "
 "Please edit your health instruction information here: %s."
 
 msgid "angeltype.driving_license.required.info.here"
 msgstr ""
-"You joined a gofur type which requires a driving license. "
+"You joined a volunteer type which requires a driving license. "
 "Please edit your driving license information here: %s."
 
 msgid "angeltype.driving_license.required.info.preview"
-msgstr "This gofur type requires a driver's license."
+msgstr "This volunteer type requires a driver's license."
 
 msgid "ifsg.info"
 msgstr "Health instruction information"
@@ -597,7 +597,7 @@ msgid "faq.faq"
 msgstr "FAQ"
 
 msgid "faq.questions_link"
-msgstr "If you don't find an answer, you can <a href=\"%s\">ask the gofurden</a>. (But this has been turned off in this edition.)"
+msgstr "If you don't find an answer, you can <a href=\"%s\">ask your lead</a>. (But this has been turned off in this edition.)"
 
 msgid "faq.edit"
 msgstr "Edit FAQ entry"
@@ -666,7 +666,7 @@ msgid "message.title"
 msgstr "Messages"
 
 msgid "message.choose_angel"
-msgstr "Choose a gofur"
+msgstr "Choose a volunteer"
 
 msgid "message.to_conversation"
 msgstr "To Conversation"
@@ -675,7 +675,7 @@ msgid "message.message"
 msgstr "Message"
 
 msgid "angel"
-msgstr "Gofur"
+msgstr "Volunteer"
 
 msgid "worklog.add"
 msgstr "Add work log"
@@ -699,7 +699,7 @@ msgid "worklog.delete.info"
 msgstr "Do you really want to delete the work log for %s?"
 
 msgid "angeltypes.angeltypes"
-msgstr "Gofur types"
+msgstr "Volunteer types"
 
 msgid "angeltypes.about"
 msgstr "Teams-/Job description"
@@ -711,19 +711,19 @@ msgid "angeltypes.restricted"
 msgstr "Requires introduction"
 
 msgid "angeltypes.restricted.info"
-msgstr "Gofur types which require introduction can only be used by a gofur "
+msgstr "Volunteer types which require introduction can only be used by a volunteer "
 "if enabled by a supporter (double opt-in)."
 
 msgid "angeltypes.restricted.hint"
-msgstr "This gofur type requires the attendance at an introduction meeting. "
+msgstr "This volunteer type requires the attendance at an introduction meeting. "
 "You might find additional information in the description."
 
 msgid "angeltypes.can-change-later"
 msgstr "You can change your selection later in the settings."
 
 msgid "angeltypes.shift.self_signup.info"
-msgstr "Gofur types which have shift self signup enabled allow gofurs to self sign up for their shifts, "
-"if shift self signup is disabled only supporters and admins can sign gofurs into shifts of these gofur types."
+msgstr "Volunteer types which have shift self signup enabled allow volunteers to self sign up for their shifts, "
+"if shift self signup is disabled only supporters and admins can sign volunteers into shifts of these gofur types."
 
 msgid "shift.self_signup"
 msgstr "Shift self signup"
@@ -790,19 +790,19 @@ msgid "event.day"
 msgstr "Day %1$d"
 
 msgid "Angel not found."
-msgstr "Gofur not found.."
+msgstr "Volunteer not found.."
 
 msgid "Angel has been marked as not active."
-msgstr "Gofur has been marked as not active."
+msgstr "Volunteer has been marked as not active."
 
 msgid "Angel has got a t-shirt."
-msgstr "Gofur has got a t-shirt."
+msgstr "Volunteer has got a t-shirt."
 
 msgid "Angel has got no t-shirt."
-msgstr "Gofur has got no t-shirt."
+msgstr "Volunteer has got no t-shirt."
 
 msgid "Reset done. Angel has not arrived."
-msgstr "Reset done. Gofur has not arrived."
+msgstr "Reset done. Volunteer has not arrived."
 
 msgid "registration.what_todo"
 msgstr "What do you want to do?"
@@ -811,7 +811,7 @@ msgid "registration.register"
 msgstr "Register"
 
 msgid "Angeltype"
-msgstr "Gofur type"
+msgstr "Volunteer type"
 
 msgid "tshirt.required.hint"
 msgstr "Please specify a T-shirt size in your settings!"
@@ -820,7 +820,7 @@ msgid "All Angels"
 msgstr "All gofurs"
 
 msgid "Angel registration successful!"
-msgstr "Gofur registration successful!"
+msgstr "Volunteer registration successful!"
 
 msgid ""
 "By completing this form you're registering as a Chaos-Angel. This script "
@@ -833,35 +833,35 @@ msgid ""
 "Angel types which require introduction can only be used by an angel if "
 "enabled by a supporter (double opt-in)."
 msgstr ""
-"Gofur types which require introduction can only be used by a gofur if "
+"Volunteer types which require introduction can only be used by a gofur if "
 "enabled by a supporter (double opt-in)."
 
 msgid "Angels needed in the next 3 hrs"
-msgstr "Gofurs needed in the next 3 hrs"
+msgstr "Volunteers needed in the next 3 hrs"
 
 msgid "Angels needed for nightshifts"
-msgstr "Gofurs needed for nightshifts"
+msgstr "Volunteers needed for nightshifts"
 
 msgid "Angels currently working"
-msgstr "Gofurs currently working"
+msgstr "Volunteers currently working"
 
 msgid "Angel:"
-msgstr "Gofur:"
+msgstr "Volunteer:"
 
 msgid "You can manage your Angeltypes <a href=\"%s\">on the Angeltypes page</a>."
 msgstr "You can manage your gofur types <a href=\"%s\">on the gofur types page</a>."
 
 msgid "Angel can receive another %d vouchers."
-msgstr "Gofur can receive another %d vouchers."
+msgstr "Volunteer can receive another %d vouchers."
 
 msgid "Angel can receive another %d vouchers and is FA."
-msgstr "Gofur can receive another %d vouchers and is FA."
+msgstr "Volunteer can receive another %d vouchers and is FA."
 
 msgid "Angel has got a goodie."
-msgstr "Gofur has got a goodie."
+msgstr "Volunteer has got a goodie."
 
 msgid "Angel has got no goodie."
-msgstr "Gofur has got no goodie."
+msgstr "Volunteer has got no goodie."
 
 msgid "Delete angeltype %s"
 msgstr "Delete gofur type %s"
@@ -1002,7 +1002,7 @@ msgstr ""
 "gofur types."
 
 msgid "Allow heaven angels to contact you by e-mail."
-msgstr "Allow gofurden managers to contact you by e-mail."
+msgstr "Allow volunteer managers to contact you by e-mail."
 
 msgid ""
 "Some angel types have to be confirmed later by a supporter at an "
@@ -1059,7 +1059,7 @@ msgid ""
 "You are not marked as arrived. Please go to heaven's desk, get your angel "
 "badge and/or tell them that you arrived already."
 msgstr ""
-"You are not marked as arrived. Please go to the gofur den, get your gofur "
+"You are not marked as arrived. Please go to your registration area, get your "
 "badge and/or tell them that you arrived already."
 
 msgid ""
@@ -1253,19 +1253,19 @@ msgid "Copy needed angels from shift type settings"
 msgstr "Copy needed gofurs from shift type settings"
 
 msgid "Angel has been marked as active."
-msgstr "Gofur has been marked as active."
+msgstr "Volunteer has been marked as active."
 
 msgid "Angel has been marked as not active."
-msgstr "Gofur has been marked as not active."
+msgstr "Volunteer has been marked as not active."
 
 msgid "Angel has been marked as arrived."
-msgstr "Gofur has been marked as arrived."
+msgstr "Volunteer has been marked as arrived."
 
 msgid "Angel has been marked as not active."
-msgstr "Gofur has been marked as not active."
+msgstr "Volunteer has been marked as not active."
 
 msgid "Angel type saved."
-msgstr "Gofur type saved."
+msgstr "Volunteer type saved."
 
 msgid "general.user"
 msgstr "User"

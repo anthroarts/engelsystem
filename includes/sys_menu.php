@@ -52,8 +52,8 @@ function make_navigation(): array
         $menu[$title] = $options;
     }
 
-    $gofurs_pages = [
-        // gofurs
+    $volunteers_pages = [
+        // volunteers
         'admin_arrive'       => [admin_arrive_title(), 'users.arrive.list'],
         'admin_active'       => ['Active angels', 'admin_user'],
         'users'              => ['All Angels', 'admin_user'],
@@ -76,14 +76,14 @@ function make_navigation(): array
     ];
 
     if (config('autoarrive')) {
-        unset($gofurs_pages['admin_arrive']);
+        unset($volunteers_pages['admin_arrive']);
     }
 
-    $gofurs_menu = make_navigation_group($gofurs_pages);
+    $volunteers_menu = make_navigation_group($volunteers_pages);
     $shift_menu = make_navigation_group($shift_pages);
     $admin_menu = make_navigation_group($admin_pages);
 
-    $menu['Gofurs'] = [$gofurs_menu, $gofurs_menu ? null : 'hide', true];
+    $menu['Volunteers'] = [$volunteers_menu, $volunteers_menu ? null : 'hide', true];
     $menu['Shift'] = [$shift_menu, $shift_menu ? null : 'hide', true];
     $menu['Admin'] = [$admin_menu, $admin_menu ? null : 'hide', true];
 

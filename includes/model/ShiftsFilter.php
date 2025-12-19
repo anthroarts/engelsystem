@@ -87,7 +87,7 @@ class ShiftsFilter
         $this->types = $data['types'] ?? [];
 //         $this->startTime = $data['startTime'] ?? null;
 //         $this->endTime = $data['endTime'] ?? null;
-        $this->startTime = DayOfEvent.get();
+        $this->startTime = DayOfEvent::get();
         $this->endTime = null;
     }
 

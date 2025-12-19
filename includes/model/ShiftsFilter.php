@@ -3,6 +3,7 @@
 namespace Engelsystem;
 
 use Engelsystem\Helpers\Carbon;
+use Engelsystem\Helpers\DayOfEvent;
 
 /**
  * BO Class that stores all parameters used to filter shifts for users.
@@ -84,8 +85,10 @@ class ShiftsFilter
         $this->filled = $data['filled'] ?? [];
         $this->locations = $data['locations'] ?? [];
         $this->types = $data['types'] ?? [];
-        $this->startTime = $data['startTime'] ?? null;
-        $this->endTime = $data['endTime'] ?? null;
+//         $this->startTime = $data['startTime'] ?? null;
+//         $this->endTime = $data['endTime'] ?? null;
+        $this->startTime = config('event_start)');
+        $this->endTime = config('event_end');
     }
 
     /**

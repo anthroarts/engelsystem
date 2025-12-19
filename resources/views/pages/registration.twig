@@ -209,7 +209,7 @@
                     <div class="col-md-6">
                         {{ f.select(
                             'tshirt_size',
-                            __('settings.profile.shirt_size'),
+                            __('user.shirt_size'),
                             tShirtSizes,
                             {
                                 'default_option': __('form.select_placeholder'),
@@ -273,6 +273,9 @@
 
         <div class="mb-5">
             <h2>{{ __('registration.what_todo') }}</h2>
+            <div class="row">
+                <p>{{ __('registration.jobs', [url('/angeltypes/about')])|raw }}</p>
+            </div>
             <div class="row mb-3">
                 {% for angelType in angelTypes %}
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">

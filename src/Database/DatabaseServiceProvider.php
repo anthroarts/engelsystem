@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Engelsystem\Database;
 
 use Carbon\Carbon;
+use Engelsystem\Config\Config;
 use Engelsystem\Container\ServiceProvider;
 use Exception;
 use Illuminate\Database\Capsule\Manager as CapsuleManager;
 use Illuminate\Database\Connection as DatabaseConnection;
+use PDO;
 use PDOException;
 use Throwable;
 
@@ -16,7 +18,9 @@ class DatabaseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        /** @var Config $config */
         $config = $this->app->get('config');
+        /** @var CapsuleManager $capsule */
         $capsule = $this->app->make(CapsuleManager::class);
         $now = Carbon::now($config->get('timezone'));
 
@@ -44,6 +48,7 @@ class DatabaseServiceProvider extends ServiceProvider
             $this->exitOnError($e);
         }
 
+        $this->app->instance(PDO::class, $pdo);
         $this->app->instance(CapsuleManager::class, $capsule);
         $this->app->instance(Db::class, $capsule);
         Db::setDbManager($capsule);

@@ -1,6 +1,7 @@
 <?php
 
 use Engelsystem\Database\Db;
+use Engelsystem\Helpers\Goodie;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\Shifts\ShiftEntry;
 use Engelsystem\Models\User\State;
@@ -9,6 +10,7 @@ use Engelsystem\ShiftCalendarRenderer;
 use Engelsystem\ShiftsFilter;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 /**
@@ -33,7 +35,6 @@ function users_controller()
     return match ($action) {
         'view'          => user_controller(),
         'delete'        => user_delete_controller(),
-        'edit_vouchers' => user_edit_vouchers_controller(),
         'list'          => users_list_controller(),
         default         => users_list_controller(),
     };
@@ -93,7 +94,7 @@ function user_delete_controller()
 
             mail_user_delete($user_source);
             success(__('User deleted.'));
-            engelsystem_log(sprintf('Deleted %s', User_Nick_render($user_source, true)));
+            engelsystem_log(sprintf('Deleted user %s', User_Nick_render($user_source, true)));
 
             throw_redirect(users_link());
         }
@@ -143,62 +144,6 @@ function user_link($userId)
 /**
  * @return array
  */
-function user_edit_vouchers_controller()
-{
-    $user = auth()->user();
-    $request = request();
-
-    if ($request->has('user_id')) {
-        $user_source = User::find($request->input('user_id'));
-    } else {
-        $user_source = $user;
-    }
-
-    if (
-        (!auth()->can('admin_user') && !auth()->can('voucher.edit'))
-        || !config('enable_voucher')
-    ) {
-        throw_redirect(url('/'));
-    }
-
-    if ($request->hasPostData('submit')) {
-        $valid = true;
-
-        $vouchers = '';
-        if (
-            $request->has('vouchers')
-            && test_request_int('vouchers')
-            && trim($request->input('vouchers')) >= 0
-        ) {
-            $vouchers = trim($request->input('vouchers'));
-        } else {
-            $valid = false;
-            error(__('Please enter a valid number of vouchers.'));
-        }
-
-        if ($valid) {
-            $user_source->state->got_voucher = $vouchers;
-            $user_source->state->save();
-
-            success(__('Saved the number of vouchers.'));
-            engelsystem_log(User_Nick_render($user_source, true) . ': ' . sprintf(
-                'Got %s vouchers',
-                $user_source->state->got_voucher
-            ));
-
-            throw_redirect(user_link($user_source->id));
-        }
-    }
-
-    return [
-        sprintf(__('%s\'s vouchers'), htmlspecialchars($user_source->displayName)),
-        User_edit_vouchers_view($user_source),
-    ];
-}
-
-/**
- * @return array
- */
 function user_controller()
 {
     $user = auth()->user();
@@ -228,16 +173,14 @@ function user_controller()
         );
         $neededAngeltypes = $shift->needed_angeltypes;
         foreach ($neededAngeltypes as &$needed_angeltype) {
-            $needed_angeltype['users'] = Db::select(
-                '
-                    SELECT `shift_entries`.`freeloaded_by`, `users`.*
-                    FROM `shift_entries`
-                    JOIN `users` ON `shift_entries`.`user_id`=`users`.`id`
-                    WHERE `shift_entries`.`shift_id` = ?
-                    AND `shift_entries`.`angel_type_id` = ?
-                ',
-                [$shift->id, $needed_angeltype['id']]
-            );
+            $needed_angeltype['users'] = User::query()
+                ->select(['users.*', 'shift_entries.freeloaded_by'])
+                ->from('shift_entries')
+                ->join('users', 'shift_entries.user_id', 'users.id')
+                ->where('shift_entries.shift_id', $shift->id)
+                ->where('shift_entries.angel_type_id', $needed_angeltype['id'])
+                ->with('state')
+                ->get();
         }
         $shift->needed_angeltypes = $neededAngeltypes;
     }
@@ -246,9 +189,9 @@ function user_controller()
         auth()->resetApiKey($user_source);
     }
 
-    $goodie_score = sprintf('%.2f', User_goodie_score($user_source->id)) . '&nbsp;h';
+    $goodie_score = sprintf('%.2f', Goodie::userScore($user_source)) . '&nbsp;h';
     if ($user_source->state->force_active && config('enable_force_active')) {
-        $goodie_score = '<span title="' . $goodie_score . '">' . __('Enough') . '</span>';
+        $goodie_score = '<span title="' . $goodie_score . '">' . __('user.goodie_score.enough') . '</span>';
     }
 
     $worklogs = $user_source->worklogs()
@@ -314,6 +257,7 @@ function users_list_controller()
             'freeloads',
             'active',
             'force_active',
+            'force_food',
             'got_goodie',
             'shirt_size',
             'planned_arrival_date',
@@ -324,12 +268,18 @@ function users_list_controller()
         $order_by = $request->input('OrderBy');
     }
 
-    /** @var User[]|Collection $users */
+    $perPage = $request->get('c', config('display_users'));
+    if ($perPage == 'all') {
+        $perPage = PHP_INT_MAX;
+    }
+    $perPage = is_numeric($perPage) ? (int) $perPage : config('display_users');
+
+    /** @var User[]|Collection|LengthAwarePaginator $users */
     $users = User::with(['contact', 'personalData', 'state', 'shiftEntries' => function (HasMany $query) {
         $query->whereNotNull('freeloaded_by');
     }])
         ->orderBy('name')
-        ->get();
+        ->paginate($perPage);
     foreach ($users as $user) {
         $user->setAttribute(
             'freeloads',
@@ -339,7 +289,7 @@ function users_list_controller()
         );
     }
 
-    $users = $users->sortBy(function (User $user) use ($order_by) {
+    $sortedUsers = $users->sortBy(function (User $user) use ($order_by) {
         $userData = $user->toArray();
         $data = [];
         array_walk_recursive($userData, function ($value, $key) use (&$data) {
@@ -348,6 +298,7 @@ function users_list_controller()
 
         return isset($data[$order_by]) ? Str::lower($data[$order_by]) : null;
     });
+    $users->setCollection($sortedUsers);
 
     return [
         __('All users'),
@@ -357,9 +308,11 @@ function users_list_controller()
             State::whereArrived(true)->count(),
             State::whereActive(true)->count(),
             State::whereForceActive(true)->count(),
+            State::whereForceFood(true)->count(),
             ShiftEntry::whereNotNull('freeloaded_by')->count(),
             State::whereGotGoodie(true)->count(),
-            State::query()->sum('got_voucher')
+            State::query()->sum('got_voucher'),
+            auth()->can('admin_user'),
         ),
     ];
 }

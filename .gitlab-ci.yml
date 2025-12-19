@@ -34,7 +34,7 @@ stages:
   needs:
     - composer install
   before_script:
-    - composer install --no-ansi --no-progress
+    - composer install --no-ansi --no-progress --ignore-platform-req=php
 
 # for jobs that depend on yarn
 .use_yarn: &use_yarn
@@ -62,7 +62,7 @@ composer install:
     - composer audit
     - composer validate
   script:
-    - composer install --no-ansi --no-progress
+    - composer install --no-ansi --no-progress --ignore-platform-req=php
 
 composer audit:
   image: php:latest
@@ -120,6 +120,7 @@ generate-version:
           (git describe --abbrev=0 --tags | tr -d '\n')\
           && echo "-${CI_COMMIT_REF_NAME}+${CI_PIPELINE_ID}.${CI_COMMIT_SHORT_SHA}"\
         )\
+        || echo "0-${CI_COMMIT_REF_NAME}+${CI_PIPELINE_ID}.${CI_COMMIT_SHORT_SHA}"\
       )"
     - echo "${VERSION}"
     - echo -n "${VERSION}" > storage/app/VERSION
@@ -386,7 +387,7 @@ deploy:
 .kubectl_deployment: &kubectl_deployment
   stage: deploy
   image:
-    name: bitnami/kubectl:latest
+    name: bitnamisecure/kubectl:latest
     entrypoint: [ '' ]
   needs:
     - test

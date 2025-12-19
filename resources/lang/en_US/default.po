@@ -40,6 +40,9 @@ msgstr "Name"
 msgid "general.shifts"
 msgstr "Shifts"
 
+msgid "general.info"
+msgstr "Info"
+
 msgid "general.description"
 msgstr "Description"
 
@@ -73,7 +76,7 @@ msgid "page.419.title"
 msgstr "Authentication expired"
 
 msgid "page.419.text"
-msgstr "The provided CSRF token is invalid or has expired"
+msgstr "The provided CSRF token is invalid or has expired. Please try again."
 
 msgid "credits.credit"
 msgstr ""
@@ -117,6 +120,9 @@ msgstr "Delete"
 
 msgid "form.delete_all"
 msgstr "Delete all"
+
+msgid "form.generate"
+msgstr "Generate"
 
 msgid "form.updated"
 msgstr "Updated"
@@ -164,7 +170,7 @@ msgid "schedule.import.load.info"
 msgstr "Import \"%s\" (version \"%s\")"
 
 msgid "schedule.name"
-msgstr "Programm name"
+msgstr "Schedule name"
 
 msgid "schedule.url"
 msgstr "Schedule URL (schedule.xml)"
@@ -260,7 +266,7 @@ msgid "news.edit.message"
 msgstr "Message"
 
 msgid "news.edit.hint"
-msgstr "You can use Markdown and the [more] tag"
+msgstr "You can use Markdown and the [more] tag to separate the preview from the main text."
 
 msgid "news.delete.title"
 msgstr "Delete news \"%s\""
@@ -276,6 +282,9 @@ msgstr "You can view it at %3$s"
 
 msgid "form.search"
 msgstr "Search"
+
+msgid "form.exact_match"
+msgstr "Exact match"
 
 msgid "log.log"
 msgstr "Logs"
@@ -367,9 +376,6 @@ msgstr "To possibly receive vouchers for the next similar event, I consent "
 msgid "settings.profile.privacy"
 msgstr "You can withdraw your approval during the event in your profile settings as well "
 "as after the event via e-mail to <a href=\"mailto:%s\">%1$s</a>."
-
-msgid "settings.profile.shirt_size"
-msgstr "T-shirt size"
 
 msgid "settings.profile.shirt_size.hint"
 msgstr "A straight-cut shirt has wide shoulders and a body which is almost square. "
@@ -493,7 +499,7 @@ msgid "settings.certificates.drive_confirmed.hint"
 msgstr "Your driving license has been confirmed, you can no longer change it by yourself."
 
 msgid "settings.certificates.confirmation.info"
-msgstr "You personally checked that the certificate / license meets the requirements."
+msgstr "You personally checked that the certificate/license meets the requirements."
 
 msgid "settings.certificates.success"
 msgstr "Certificates were updated successfully."
@@ -590,6 +596,9 @@ msgstr "Login using %s"
 msgid "form.connect"
 msgstr "Connect"
 
+msgid "form.all"
+msgstr "All"
+
 msgid "form.disconnect"
 msgstr "Disconnect"
 
@@ -635,11 +644,29 @@ msgstr "Delete question \"%s\""
 msgid "question.contact_options"
 msgstr "Other contact options: "
 
-msgid "user.edit.shirt"
-msgstr "Edit T-shirt"
+msgid "tag.tags"
+msgstr "Tags"
+
+msgid "tag.edit"
+msgstr "Edit tag"
+
+msgid "tag.add"
+msgstr "Create new tag"
+
+msgid "tag.delete.title"
+msgstr "Delete tag \"%s\""
 
 msgid "user.edit.goodie"
 msgstr "Edit goodie"
+
+msgid "user.goodie_score.enough"
+msgstr "Enough"
+
+msgid "user.goodie_score.value"
+msgstr "%s h"
+
+msgid "user.goodie_score"
+msgstr "Goodie score: %s"
 
 msgid "user.shirt_size"
 msgstr "T-shirt size"
@@ -648,16 +675,16 @@ msgid "user.active"
 msgstr "Active"
 
 msgid "user.force_active"
-msgstr "Active (forced)"
+msgstr "Always active"
+
+msgid "user.force_food"
+msgstr "Unlimited food"
 
 msgid "user.arrived"
 msgstr "Arrived"
 
 msgid "user.arrive"
 msgstr "Arrive"
-
-msgid "user.got_shirt"
-msgstr "Got T-shirt"
 
 msgid "user.got_goodie"
 msgstr "Got goodie"
@@ -689,14 +716,38 @@ msgstr "Work date"
 msgid "worklog.hours"
 msgstr "Work hours"
 
-msgid "worklog.comment"
-msgstr "Comment"
+msgid "worklog.description"
+msgstr "Description"
+
+msgid "worklog.night_shift"
+msgstr "Work log is a night shift"
 
 msgid "worklog.delete"
 msgstr "Delete work log"
 
 msgid "worklog.delete.info"
 msgstr "Do you really want to delete the work log for %s?"
+
+msgid "voucher.vouchers"
+msgstr "Vouchers"
+
+msgid "voucher.edit"
+msgstr "Edit vouchers"
+
+msgid "voucher.eligible"
+msgstr "Angel can receive another %d vouchers."
+
+msgid "voucher.eligible.force"
+msgstr "Angel can receive <s>%d</s> unlimited vouchers."
+
+msgid "voucher.count"
+msgstr "Number of vouchers handed out"
+
+msgid "user.state.vouchers"
+msgstr "Got %s of %s vouchers"
+
+msgid "user.state.vouchers.force"
+msgstr "<s>%d</s> unlimited"
 
 msgid "angeltypes.angeltypes"
 msgstr "Volunteer types"
@@ -705,7 +756,8 @@ msgid "angeltypes.about"
 msgstr "Teams-/Job description"
 
 msgid "angeltypes.about.text"
-msgstr "Here you can find the list of teams and their tasks. If you have further questions, have a look at the FAQ."
+msgstr "Here you can find the list of teams and their tasks. If you have further questions, "
+"have a look at the <a href=\"%s\">FAQ</a>."
 
 msgid "angeltypes.restricted"
 msgstr "Requires introduction"
@@ -738,8 +790,20 @@ msgid "angeltypes.hide_on_shift_view.info"
 msgstr "If checked only admins and members of the volunteer type "
 "can see the filter option for this volunteer type on the shifts page"
 
-msgid "registration.register"
-msgstr "Register"
+msgid "angeltypes.qr"
+msgstr "Join angel type \"%s\" QR code"
+
+msgid "angeltypes.qr.expires"
+msgstr "Expires %c"
+
+msgid "angeltypes.qr.expired"
+msgstr "Expired"
+
+msgid "angeltypes.qr.time"
+msgstr "Lifetime (minutes)"
+
+msgid "angeltypes.qr.time.info"
+msgstr "The link will be valid for the whole time span and can't be revoked!"
 
 msgid "location.location"
 msgstr "Location"
@@ -807,6 +871,10 @@ msgstr "Reset done. Volunteer has not arrived."
 msgid "registration.what_todo"
 msgstr "What do you want to do?"
 
+msgid "registration.jobs"
+msgstr "You can find more information about how to help us in the "
+"<a href=\"%s\" target=\"_blank\">Teams-/Job description</a>."
+
 msgid "registration.register"
 msgstr "Register"
 
@@ -865,6 +933,12 @@ msgstr "Volunteer has got no goodie."
 
 msgid "Delete angeltype %s"
 msgstr "Delete volunteer type %s"
+
+msgid "general.created_at"
+msgstr "Created at"
+
+msgid "general.url"
+msgstr "URL"
 
 msgid "User is not in angeltype."
 msgstr "User is not in volunteer type."
@@ -961,6 +1035,9 @@ msgstr "%1$s, starting %2$s"
 msgid "Search angel:"
 msgstr "Search volunteers:"
 
+msgid "footer.issues"
+msgstr "Bugs/Features"
+
 msgid "How much angels should be active?"
 msgstr "How many volunteers should be active?"
 
@@ -1004,12 +1081,11 @@ msgstr ""
 msgid "Allow heaven angels to contact you by e-mail."
 msgstr "Allow volunteer managers to contact you by e-mail."
 
-msgid ""
-"Some angel types have to be confirmed later by a supporter at an "
-"introduction meeting. You can change your selection in the options section."
-msgstr ""
-"Some volunteer types have to be confirmed later by a supporter at an "
-"introduction meeting. You can change your selection in the options section."
+msgid "shift.next"
+msgstr "Next shift"
+
+msgid "shift.previous"
+msgstr "Previous shift"
 
 msgid "Hello %s, here can you leave messages for other angels"
 msgstr "Hello %s, here you can leave messages for other volunteers"

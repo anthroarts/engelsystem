@@ -1,6 +1,7 @@
 <?php
 
 use Engelsystem\Config\GoodieType;
+use Engelsystem\Helpers\Markdown;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\User\License;
 use Engelsystem\Models\User\User;
@@ -130,60 +131,69 @@ function AngelType_edit_view(AngelType $angeltype, bool $supporter_mode)
                 ]) : '',
             msg(),
             form([
-                $supporter_mode
-                    ? form_info(__('general.name'), htmlspecialchars($angeltype->name))
-                    : form_text('name', __('general.name'), $angeltype->name, false, 255),
-                $supporter_mode
-                    ? form_info(__('angeltypes.restricted'), $angeltype->restricted ? __('Yes') : __('No'))
-                    : form_checkbox(
-                        'restricted',
-                        __('angeltypes.restricted') .
-                        ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
-                        __('angeltypes.restricted.info') . '"></span>',
-                        $angeltype->restricted
-                    ),
-                $supporter_mode
-                    ? form_info(__('shift.self_signup'), $angeltype->shift_self_signup ? __('Yes') : __('No'))
-                    : form_checkbox(
-                        'shift_self_signup',
-                        __('shift.self_signup') .
-                        ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
-                        __('angeltypes.shift.self_signup.info') . '"></span>',
-                        $angeltype->shift_self_signup
-                    ),
-                $requires_driving_license,
-                $requires_ifsg,
-                $supporter_mode
-                    ? form_info(__('Show on dashboard'), $angeltype->show_on_dashboard ? __('Yes') : __('No'))
-                    : form_checkbox('show_on_dashboard', __('Show on dashboard'), $angeltype->show_on_dashboard),
-                $supporter_mode
-                    ? form_info(__('Hide at Registration'), $angeltype->hide_register ? __('Yes') : __('No'))
-                    : form_checkbox('hide_register', __('Hide at Registration'), $angeltype->hide_register),
-                $supporter_mode
-                    ? form_info(
-                        __('angeltypes.hide_on_shift_view'),
-                        $angeltype->hide_on_shift_view ? __('Yes') : __('No')
-                    )
-                    : form_checkbox(
-                        'hide_on_shift_view',
-                        __('angeltypes.hide_on_shift_view') .
-                        ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
-                        __('angeltypes.hide_on_shift_view.info') . '"></span>',
-                        $angeltype->hide_on_shift_view
-                    ),
-                form_textarea('description', __('general.description'), $angeltype->description),
-                form_info('', __('Please use markdown for the description.')),
-                heading(__('Contact'), 3),
-                form_info(
-                    '',
-                    __('Primary contact person/desk for user questions.')
-                ),
-                form_text('contact_name', __('general.name'), $angeltype->contact_name),
-                config('enable_dect') ? form_text('contact_dect', __('general.dect'), $angeltype->contact_dect) : '',
-                form_text('contact_email', __('general.email'), $angeltype->contact_email),
+                div('row', [
+                    div('col-md-9', [
+                        $supporter_mode
+                            ? form_info(__('general.name'), htmlspecialchars($angeltype->name))
+                            : form_text('name', __('general.name'), $angeltype->name, false, 255),
+                        form_textarea('description', __('general.description'), $angeltype->description),
+                        form_info('', __('Please use markdown for the description.')),
+                        heading(__('Contact'), 3),
+                        form_info(
+                            '',
+                            __('Primary contact person/desk for user questions.')
+                        ),
+                        form_text('contact_name', __('general.name'), $angeltype->contact_name),
+                        config('enable_dect') ? form_text('contact_dect', __('general.dect'), $angeltype->contact_dect) : '',
+                        form_text('contact_email', __('general.email'), $angeltype->contact_email),
+                    ]),
+
+                    div('col-md-3', [
+                        heading(__('State'), 3),
+                        $supporter_mode
+                            ? form_info(__('angeltypes.restricted'), $angeltype->restricted ? __('Yes') : __('No'))
+                            : form_checkbox(
+                                'restricted',
+                                __('angeltypes.restricted') .
+                                ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
+                                __('angeltypes.restricted.info') . '"></span>',
+                                $angeltype->restricted
+                            ),
+                        $supporter_mode
+                            ? form_info(__('shift.self_signup'), $angeltype->shift_self_signup ? __('Yes') : __('No'))
+                            : form_checkbox(
+                                'shift_self_signup',
+                                __('shift.self_signup') .
+                                ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
+                                __('angeltypes.shift.self_signup.info') . '"></span>',
+                                $angeltype->shift_self_signup
+                            ),
+                        $requires_driving_license,
+                        $requires_ifsg,
+                        $supporter_mode
+                            ? form_info(__('Show on dashboard'), $angeltype->show_on_dashboard ? __('Yes') : __('No'))
+                            : form_checkbox('show_on_dashboard', __('Show on dashboard'), $angeltype->show_on_dashboard),
+                        $supporter_mode
+                            ? form_info(__('Hide at Registration'), $angeltype->hide_register ? __('Yes') : __('No'))
+                            : form_checkbox('hide_register', __('Hide at Registration'), $angeltype->hide_register),
+                        $supporter_mode
+                            ? form_info(
+                                __('angeltypes.hide_on_shift_view'),
+                                $angeltype->hide_on_shift_view ? __('Yes') : __('No')
+                            )
+                            : form_checkbox(
+                                'hide_on_shift_view',
+                                __('angeltypes.hide_on_shift_view') .
+                                ' <span class="bi bi-info-circle-fill text-info" data-bs-toggle="tooltip" title="' .
+                                __('angeltypes.hide_on_shift_view.info') . '"></span>',
+                                $angeltype->hide_on_shift_view
+                            ),
+                    ]),
+                ]),
                 form_submit('submit', icon('save') . __('form.save')),
             ]),
-        ]
+        ],
+        true
     );
 }
 
@@ -275,6 +285,15 @@ function AngelType_view_buttons(
             '',
             __('form.edit')
         );
+        if (config('app_key') && config('join_qr_code', true)) {
+            $buttons[] = button(
+                url('/angeltypes/' . $angeltype->id . '/qr'),
+                icon('qr-code'),
+                '',
+                '',
+                __('general.qr')
+            );
+        }
     }
     if ($admin_angeltypes) {
         $buttons[] = button(
@@ -349,12 +368,8 @@ function AngelType_view_members(AngelType $angeltype, $members, $admin_user_ange
                 ? ($member->personalData->shirt_size ?: '-')
                 : '';
             $got_goodie_button_title = $member->state->got_goodie
-                ? ($goodie_tshirt
-                    ? __('Remove T-shirt')
-                    : __('Remove goodie'))
-                : ($goodie_tshirt
-                    ? __('user.got_shirt')
-                    : __('user.got_goodie'));
+                ? __('Remove goodie')
+                : __('user.got_goodie');
             $goodie_actions[] = ($shirtSize !== '-') ? form(
                 [
                     form_submit(
@@ -381,9 +396,7 @@ function AngelType_view_members(AngelType $angeltype, $members, $admin_user_ange
                 icon('pencil'),
                 'btn-secondary btn-sm',
                 false,
-                $goodie_tshirt
-                    ? __('user.edit.shirt')
-                    : __('user.edit.goodie'),
+                __('user.edit.goodie'),
             );
             if ($goodie_tshirt) {
                 $member['shirt_size'] = isset($tshirt_sizes[$shirtSize]) ? $tshirt_sizes[$shirtSize] : '-';
@@ -445,7 +458,7 @@ function AngelType_view_members(AngelType $angeltype, $members, $admin_user_ange
                             'supporter' => 0,
                         ]),
                         icon('person-fill-down'),
-                        'btn-sm',
+                        'btn-sm btn-danger',
                         '',
                         __('Remove supporter rights'),
                     ),
@@ -549,11 +562,10 @@ function AngelType_view_table_headers(AngelType $angeltype, $supporter, $admin_a
         && auth()->can('angeltype.goodie.list')
         && auth()->can('user.goodie.edit')
     ) {
-        $headers['goodie_actions'] = __('Goodie actions');
         if ($goodie_tshirt) {
-            $headers['goodie_actions'] = __('T-shirt actions');
             $headers['shirt_size'] = __('user.shirt_size');
         }
+        $headers['goodie_actions'] = __('Goodie actions');
     }
     $headers['actions'] = '';
 
@@ -593,7 +605,7 @@ function AngelType_view(
     $add = (($admin_angeltypes || $admin_user_angeltypes) ? button(
         url('/user-angeltypes', ['action' => 'add', 'angeltype_id' => $angeltype->id]),
         icon('plus-lg'),
-        '',
+        'btn-sm',
         '',
         __('general.add')
     ) : '');
@@ -603,7 +615,7 @@ function AngelType_view(
             AngelType_view_buttons($angeltype, $user_angeltype, $admin_angeltypes, $supporter, $user_license, $user),
             msg(),
             tabs([
-                __('Info') => AngelType_view_info(
+                __('general.info') => AngelType_view_info(
                     $angeltype,
                     $members,
                     $admin_user_angeltypes,
@@ -666,9 +678,8 @@ function AngelType_view_info(
     }
 
     $info[] = '<h3>' . __('general.description') . '</h3>';
-    $parsedown = new Parsedown();
     if ($angeltype->description != '') {
-        $info[] = $parsedown->parse(htmlspecialchars($angeltype->description));
+        $info[] = (new Markdown())->render($angeltype->description);
     }
     if ($angeltype->requires_ifsg_certificate && $required_info_show) {
         $info[] = info(__('angeltype.ifsg.required.info.preview'), true);
@@ -780,7 +791,7 @@ function AngelTypes_list_view($angeltypes, bool $admin_angeltypes)
     $add = button(
         url('/angeltypes', ['action' => 'edit']),
         icon('plus-lg'),
-        '',
+        'btn-sm',
         '',
         __('general.add')
     );

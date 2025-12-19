@@ -44,9 +44,16 @@ function make_navigation(): array
         'news'           => 'news.title',
         'user_shifts'    => 'general.shifts',
         'locations'      => ['location.locations', 'locations.view'],
+        'questions'      => ['question.menu', 'question.add'],
     ];
 
-    $menu = make_navigation_group($pages);
+    foreach ($pages as $menu_page => $options) {
+        $options = (array) $options;
+        $menu[$options[0]] = [
+            url(str_replace('_', '-', $menu_page)),
+            $options[1] ?? $menu_page,
+        ];
+    }
 
     foreach (config('header_items', []) as $title => $options) {
         $menu[$title] = $options;
@@ -66,11 +73,7 @@ function make_navigation(): array
         'admin_shifts'       => ['Create shifts', 'admin_shifts'],
         'admin/shifttypes'   => ['shifttype.shifttypes', 'shifttypes.edit'],
         'admin/schedule'     => ['schedule.import', 'schedule.import'],
-    ];
-
-    $admin_pages = [
-        // Other admin stuff
-        'admin_groups'       => ['Group rights', 'admin_groups'],
+        'admin/tags'         => ['tag.tags', 'tag.edit'],
         'admin/logs'         => ['log.log', 'admin_log'],
         'admin/config'       => ['config.config', 'config.edit'],
     ];

@@ -192,6 +192,9 @@ msgstr "FAQ Eintrag erfolgreich gelöscht."
 msgid "faq.edit.success"
 msgstr "FAQ Eintrag erfolgreich aktualisiert."
 
+msgid "question.menu"
+msgstr "Frag den Himmel"
+
 msgid "question.delete.success"
 msgstr "Frage erfolgreich gelöscht."
 
@@ -200,6 +203,15 @@ msgstr "Frage erstellt."
 
 msgid "question.edit.success"
 msgstr "Frage erfolgreich bearbeitet."
+
+msgid "tag.edit.duplicate"
+msgstr "Ein Tag mit dem Namen existiert bereits!"
+
+msgid "tag.edit.success"
+msgstr "Der Tag wurde erfolgreich aktualisiert."
+
+msgid "tag.delete.success"
+msgstr "Tag erfolgreich gelöscht."
 
 msgid "notification.news.new"
 msgstr "Neue News: %s"
@@ -237,6 +249,9 @@ msgstr "Du wurdest von einem Supporter als %1$s hinzugefügt."
 msgid "notification.angeltype.added.text"
 msgstr "Eine Beschreibung findest du unter %2$s"
 
+msgid "angeltype.add.success"
+msgstr "Erfolgreich dem Engeltyp beigetreten"
+
 msgid "notification.shift.deleted"
 msgstr "Deine Schicht wurde gelöscht"
 
@@ -268,6 +283,9 @@ msgstr "Arbeitseinsatz erfolgreich bearbeitet."
 
 msgid "worklog.delete.success"
 msgstr "Arbeitseinsatz erfolgreich gelöscht."
+
+msgid "voucher.save.success"
+msgstr "Anzahl der Gutscheine gespeichert."
 
 msgid "location.edit.success"
 msgstr "Ort erfolgreich bearbeitet."

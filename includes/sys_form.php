@@ -60,6 +60,9 @@ function form_datetime(string $name, string $label, $value)
 {
     $dom_id = $name . '-datetime';
     if ($value) {
+        if ($value instanceof DateTime) {
+            $value = Carbon::instance($value);
+        }
         $value = ($value instanceof Carbon) ? $value : Carbon::createFromTimestamp($value, Carbon::now()->timezone);
     }
 
@@ -261,12 +264,12 @@ function form_textarea($name, $label, $value, $disabled = false)
  * @param string   $class
  * @return string
  */
-function form_select($name, $label, $values, $selected, $selectText = '', $class = '')
+function form_select($name, $label, $values, $selected, $selectText = '', $class = '', $id = '')
 {
     return form_element(
         $label,
-        html_select_key('form_' . $name, $name, $values, $selected, $selectText),
-        'form_' . $name,
+        html_select_key('form_' . $id ?? $name, $name, $values, $selected, $selectText),
+        'form_' . $id ?? $name,
         $class
     );
 }
@@ -302,10 +305,14 @@ function form_element($label, $input, $for = '', $class = '')
  * @param string   $style
  * @return string
  */
-function form($elements, $action = '', $style = '', $btnGroup = false)
+function form($elements, $action = '', $style = '', $btnGroup = false, $class = null)
 {
+    if ($btnGroup) {
+        $class .= ' btn-group';
+    }
+
     return '<form action="' . $action . '" enctype="multipart/form-data" method="post"'
-        . ($btnGroup ? ' class="btn-group"' : '')
+        . ($class ? ' class="' . $class . '"' : '')
         . ($style ? ' style="' . $style . '"' : '') . '>'
         . join($elements)
         . form_csrf()

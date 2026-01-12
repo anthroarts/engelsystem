@@ -23,6 +23,7 @@ return [
         \Engelsystem\Helpers\Translation\TranslationServiceProvider::class,
         \Engelsystem\Http\ResponseServiceProvider::class,
         \Engelsystem\Http\Psr7ServiceProvider::class,
+        \Engelsystem\Helpers\CacheServiceProvider::class,
         \Engelsystem\Helpers\AuthenticatorServiceProvider::class,
         \Engelsystem\Helpers\AssetsServiceProvider::class,
         \Engelsystem\Renderer\TwigServiceProvider::class,
@@ -30,6 +31,7 @@ return [
         \Engelsystem\Middleware\RequestHandlerServiceProvider::class,
         \Engelsystem\Http\Validation\ValidationServiceProvider::class,
         \Engelsystem\Http\RedirectServiceProvider::class,
+        \Engelsystem\Http\PaginationServiceProvider::class,
 
         // Additional services
         \Engelsystem\Helpers\VersionServiceProvider::class,

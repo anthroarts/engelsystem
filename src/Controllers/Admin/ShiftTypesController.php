@@ -69,11 +69,43 @@ class ShiftTypesController extends BaseController
     public function view(Request $request): Response
     {
         $shiftTypeId = (int) $request->getAttribute('shift_type_id');
+        /** @var ShiftType $shiftType */
         $shiftType = $this->shiftType->findOrFail($shiftTypeId);
+
+        $days = $shiftType->shifts()
+            ->scopes('needsUsers')
+            ->selectRaw('DATE(start) AS date')
+            ->orderBy('date')
+            ->groupBy('date')
+            ->pluck('date');
+
+        $day = $request->get('day');
+        $day = $days->contains($day) ? $day : $days->first();
+
+        $shifts = $shiftType->shifts()
+            ->with([
+                'neededAngelTypes.angelType',
+                'schedule',
+                'shiftEntries.user.personalData',
+                'shiftEntries.user.state',
+                'shiftEntries.angelType',
+                'shiftType.neededAngelTypes.angelType',
+                'location.neededAngelTypes.angelType',
+            ])
+            ->whereDate('start', $day)
+            ->orderBy('start')
+            ->get();
 
         return $this->response->withView(
             'admin/shifttypes/view',
-            ['shifttype' => $shiftType, 'is_view' => true]
+            [
+                'shifttype' => $shiftType,
+                'is_view' => true,
+                'shifts_active' => $request->has('shifts') || $request->get('day'),
+                'days' => $days,
+                'selected_day' => $day,
+                'shifts' => $shifts,
+            ]
         );
     }
 
@@ -136,8 +168,9 @@ class ShiftTypesController extends BaseController
         }
 
         $this->log->info(
-            'Updated shift type "{name}": {description}, {signup_advance_hours}, {angels}',
+            'Saved shift type "{name}" ({id}): {description}, {signup_advance_hours}, {angels}',
             [
+                'id' => $shiftType->id,
                 'name' => $shiftType->name,
                 'description' => $shiftType->description,
                 'signup_advance_hours' => $shiftType->signup_advance_hours,
@@ -165,7 +198,7 @@ class ShiftTypesController extends BaseController
         }
         $shiftType->delete();
 
-        $this->log->info('Deleted shift type {name}', ['name' => $shiftType->name]);
+        $this->log->info('Deleted shift type {name} ({id})', ['name' => $shiftType->name, 'id' => $shiftType->id]);
         $this->addNotification('shifttype.delete.success');
 
         return $this->redirect->to('/admin/shifttypes');

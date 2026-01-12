@@ -59,7 +59,7 @@ function Shifts_by_angeltype(AngelType $angeltype)
  *
  * @return Collection|Shift[]
  */
-function Shifts_free($start, $end, ShiftsFilter $filter = null)
+function Shifts_free($start, $end, ?ShiftsFilter $filter = null)
 {
     $start = Carbon::createFromTimestamp($start, Carbon::now()->timezone);
     $end = Carbon::createFromTimestamp($end, Carbon::now()->timezone);
@@ -351,6 +351,60 @@ function NeededAngeltype_by_Shift_and_Angeltype(Shift $shift, AngelType $angelty
 }
 
 /**
+ * returns all days with shifts needing angels for a location
+ *
+ * @param int $location_id
+ * @return list<string>
+ */
+function Days_by_Location_id(int $location_id): array
+{
+    $sql = '
+        SELECT
+            DATE(`shifts`.`start`) AS `day`
+        FROM `shifts`
+        JOIN `needed_angel_types` ON `needed_angel_types`.`shift_id`=`shifts`.`id`
+        LEFT JOIN schedule_shift AS s on shifts.id = s.shift_id
+        WHERE `shifts`.`location_id` = ?
+        AND s.shift_id IS NULL
+
+        UNION
+
+        /* By shift type */
+        SELECT
+            DATE(`shifts`.`start`) AS `day`
+        FROM `shifts`
+        JOIN `needed_angel_types` ON `needed_angel_types`.`shift_type_id`=`shifts`.`shift_type_id`
+        LEFT JOIN schedule_shift AS s on shifts.id = s.shift_id
+        LEFT JOIN schedules AS se on s.schedule_id = se.id
+        WHERE `shifts`.`location_id` = ?
+        AND NOT s.shift_id IS NULL
+        AND se.needed_from_shift_type = TRUE
+
+        UNION
+
+        /* By location */
+        SELECT
+            DATE(`shifts`.`start`) AS `day`
+        FROM `shifts`
+        JOIN `needed_angel_types` ON `needed_angel_types`.`location_id`=`shifts`.`location_id`
+        LEFT JOIN schedule_shift AS s on shifts.id = s.shift_id
+        LEFT JOIN schedules AS se on s.schedule_id = se.id
+        WHERE `shifts`.`location_id` = ?
+        AND NOT s.shift_id IS NULL
+        AND se.needed_from_shift_type = FALSE
+    ';
+
+    return array_column(Db::select(
+        $sql,
+        [
+            $location_id,
+            $location_id,
+            $location_id,
+        ]
+    ), 'day');
+}
+
+/**
  * @param ShiftsFilter $shiftsFilter
  * @return ShiftEntry[]|Collection
  */
@@ -536,9 +590,10 @@ function Shift_signup_allowed_admin(AngelType $needed_angeltype, $shift_entries)
  * @param Shift     $shift The shift
  * @param AngelType $angeltype The angeltype
  * @param int       $signout_user_id The user that was signed up for the shift
+ * @param ?bool     $isAngeltypeSupporter User is supporter for angeltype
  * @return bool
  */
-function Shift_signout_allowed(Shift $shift, AngelType $angeltype, $signout_user_id)
+function Shift_signout_allowed(Shift $shift, AngelType $angeltype, $signout_user_id, ?bool $isAngeltypeSupporter = null)
 {
     $user = auth()->user();
 
@@ -548,9 +603,10 @@ function Shift_signout_allowed(Shift $shift, AngelType $angeltype, $signout_user
     }
 
     // angeltype supporter can sign out any user at any time from their supported angeltype
-    if (
-        $user->isAngelTypeSupporter($angeltype) || auth()->can('admin_user_angeltypes')
-    ) {
+    $isAngeltypeSupporter = !is_null($isAngeltypeSupporter)
+        ? $isAngeltypeSupporter
+        : $user->isAngelTypeSupporter($angeltype);
+    if ($isAngeltypeSupporter || auth()->can('admin_user_angeltypes')) {
         return true;
     }
 
@@ -612,6 +668,12 @@ function Shift_signup_allowed(
  */
 function Shifts_by_user($userId, $include_freeloaded_comments = false)
 {
+    # Cache static content per request
+    static $cached;
+    if (!empty($cached[$userId][$include_freeloaded_comments])) {
+        return $cached[$userId][$include_freeloaded_comments];
+    }
+
     $shiftsData = Db::select(
         '
         SELECT
@@ -632,6 +694,7 @@ function Shifts_by_user($userId, $include_freeloaded_comments = false)
         JOIN `shift_types` ON (`shift_types`.`id` = `shifts`.`shift_type_id`)
         JOIN `locations` ON (`shifts`.`location_id` = `locations`.`id`)
         WHERE shift_entries.`user_id` = ?
+        GROUP BY shifts.id
         ORDER BY `start`
         ',
         [
@@ -644,6 +707,7 @@ function Shifts_by_user($userId, $include_freeloaded_comments = false)
         $shifts[] = (new Shift())->forceFill($data);
     }
     $shifts->load(['shiftType', 'location']);
+    $cached[$userId][$include_freeloaded_comments] = $shifts;
 
     return $shifts;
 }

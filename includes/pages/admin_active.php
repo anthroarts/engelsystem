@@ -1,7 +1,9 @@
 <?php
 
 use Engelsystem\Config\GoodieType;
+use Engelsystem\Database\Db;
 use Engelsystem\Helpers\Carbon;
+use Engelsystem\Helpers\Goodie;
 use Engelsystem\Models\Shifts\ShiftEntry;
 use Engelsystem\Models\User\State;
 use Engelsystem\Models\User\User;
@@ -23,7 +25,8 @@ function admin_active_title()
 function admin_active()
 {
     $tshirt_sizes = config('tshirt_sizes');
-    $shift_sum_formula = User_get_shifts_sum_query();
+    $shift_sum_formula = Goodie::shiftScoreQuery()->getValue(Db::connection()->getQueryGrammar());
+    $worklog_sum_formula = Goodie::worklogScoreQuery()->getValue(Db::connection()->getQueryGrammar());
     $request = request();
     $goodie = GoodieType::from(config('goodie_type'));
     $goodie_enabled = $goodie !== GoodieType::None;
@@ -68,20 +71,21 @@ function admin_active()
                             users.*,
                             COUNT(shift_entries.id) AS shift_count,
                                 (%s + (
-                                    SELECT COALESCE(SUM(`hours`) * 3600, 0)
+                                    SELECT %s * 3600
                                     FROM `worklogs` WHERE `user_id`=`users`.`id`
                                     AND `worked_at` <= NOW()
                                 )) AS `shift_length`
                         ',
-                        $shift_sum_formula
+                        $shift_sum_formula,
+                        $worklog_sum_formula
                     )
                 )
                 ->leftJoin('shift_entries', 'users.id', '=', 'shift_entries.user_id')
                 ->leftJoin('shifts', 'shift_entries.shift_id', '=', 'shifts.id')
                 ->leftJoin('users_state', 'users.id', '=', 'users_state.user_id')
-                ->where('users_state.arrived', '=', true)
+                ->whereNotNull('users_state.arrival_date')
                 ->orWhere(function (EloquentBuilder $userinfo) {
-                    $userinfo->where('users_state.arrived', '=', false)
+                    $userinfo->whereNull('users_state.arrival_date')
                         ->whereNotNull('users_state.user_info')
                         ->whereNot('users_state.user_info', '');
                 })
@@ -150,11 +154,9 @@ function admin_active()
                 } else {
                     $user_source->state->got_goodie = true;
                     $user_source->state->save();
-                    engelsystem_log('User ' . User_Nick_render($user_source, true) . ' has tshirt now.');
+                    engelsystem_log('User ' . User_Nick_render($user_source, true) . ' has goodie now.');
                     $msg = success(
-                        ($goodie_tshirt
-                            ? __('Angel has got a T-shirt.')
-                            : __('Angel has got a goodie.')),
+                        __('Angel got a goodie.'),
                         true
                     );
                 }
@@ -167,11 +169,9 @@ function admin_active()
             if ($user_source) {
                 $user_source->state->got_goodie = false;
                 $user_source->state->save();
-                engelsystem_log('User ' . User_Nick_render($user_source, true) . ' has NO tshirt.');
+                engelsystem_log('User ' . User_Nick_render($user_source, true) . ' has NO goodie.');
                 $msg = success(
-                    ($goodie_tshirt
-                        ? __('Angel has got no T-shirt.')
-                        : __('Angel has got no goodie.')),
+                    __('Angel got no goodie.'),
                     true
                 );
             } else {
@@ -180,19 +180,20 @@ function admin_active()
         }
     }
 
-    $query = User::with(['personalData', 'state', 'worklogs'])
+    $query = User::with(['personalData', 'state', 'worklogs', 'shiftEntries'])
         ->selectRaw(
             sprintf(
                 '
                     users.*,
                     COUNT(shift_entries.id) AS shift_count,
                         (%s + (
-                            SELECT COALESCE(SUM(`hours`) * 3600, 0)
+                            SELECT %s * 3600
                             FROM `worklogs` WHERE `user_id`=`users`.`id`
                             AND `worked_at` <= NOW()
                         )) AS `shift_length`
                 ',
-                $shift_sum_formula
+                $shift_sum_formula,
+                $worklog_sum_formula
             )
         )
         ->leftJoin('shift_entries', 'users.id', '=', 'shift_entries.user_id')
@@ -208,9 +209,9 @@ function admin_active()
             }
         })
         ->leftJoin('users_state', 'users.id', '=', 'users_state.user_id')
-        ->where('users_state.arrived', '=', true)
+        ->whereNotNull('users_state.arrival_date')
         ->orWhere(function (EloquentBuilder $userinfo) {
-            $userinfo->where('users_state.arrived', '=', false)
+            $userinfo->whereNull('users_state.arrival_date')
                 ->whereNotNull('users_state.user_info')
                 ->whereNot('users_state.user_info', '');
         })
@@ -251,9 +252,8 @@ function admin_active()
 
         $timeSum = 0;
         /** @var ShiftEntry[] $shiftEntries */
-        $shiftEntries = $user->shiftEntries()
-            ->with('shift')
-            ->get();
+        $shiftEntries = $user->shiftEntries
+            ->load('shift');
         foreach ($shiftEntries as $entry) {
             if ($entry->freeloaded_by || $entry->shift->start > Carbon::now()) {
                 continue;
@@ -280,6 +280,7 @@ function admin_active()
             . ' min (' . sprintf('%.2f', $user['shift_length'] / 3600) . '&nbsp;h)';
         $userData['active'] = icon_bool($user->state->active);
         $userData['force_active'] = icon_bool($user->state->force_active);
+        $userData['force_food'] = icon_bool($user->state->force_food);
         $userData['tshirt'] = icon_bool($user->state->got_goodie);
         $userData['shift_count'] = $user['shift_count'];
 
@@ -349,7 +350,7 @@ function admin_active()
                     [form_submit(
                         'submit',
                         icon('gift')
-                        . ($goodie_tshirt ? __('user.got_shirt') : __('user.got_goodie')),
+                        . __('user.got_goodie'),
                         'btn-sm',
                         false,
                         'secondary'
@@ -374,7 +375,7 @@ function admin_active()
                     [form_submit(
                         'submit',
                         icon('gift')
-                        . ($goodie_tshirt ? __('Remove T-shirt') : __('Remove goodie')),
+                        . __('Remove goodie'),
                         'btn-sm',
                         false,
                         'secondary'
@@ -400,24 +401,31 @@ function admin_active()
     }
 
     $goodie_statistics = [];
+    $total = 0;
     if ($goodie_tshirt) {
         foreach (array_keys($tshirt_sizes) as $size) {
-            $gc = State::query()
+            $query = State::query()
                 ->leftJoin('users_settings', 'users_state.user_id', '=', 'users_settings.user_id')
                 ->leftJoin('users_personal_data', 'users_state.user_id', '=', 'users_personal_data.user_id')
-                ->where('users_state.got_goodie', '=', true)
                 ->where('users_personal_data.shirt_size', '=', $size)
-                ->count();
+            ;
+            $given = $query->clone()->where('users_state.got_goodie', true)->count();
+            $notGiven = $query->clone()->where('users_state.got_goodie', false)->count();
+
+            $totalSum = $given + $notGiven;
+            $total += $totalSum;
             $goodie_statistics[] = [
                 'size' => $size,
-                'given' => $gc,
+                'given' => $given,
+                'total' => $totalSum,
             ];
         }
     }
 
     $goodie_statistics[] = array_merge(
         ($goodie_tshirt ? ['size' => '<b>' . __('Sum') . '</b>'] : []),
-        ['given' => '<b>' . State::whereGotGoodie(true)->count() . '</b>']
+        ['given' => '<b>' . State::whereGotGoodie(true)->count() . '</b>'],
+        ['total' => '<b>' . $total . '</b>'],
     );
 
     return page_with_title(admin_active_title(), [
@@ -442,25 +450,23 @@ function admin_active()
                     'shift_count' => __('general.shifts'),
                     'work_time' => __('Length'),
                 ],
-                ($goodie_enabled ? ['score' => ($goodie_tshirt
-                    ? __('T-shirt score')
-                    : __('Goodie score')
-                )] : []),
+                ($goodie_enabled ? ['score' => __('Goodie score')] : []),
                 [
                     'active' => __('Active'),
                 ],
                 (config('enable_force_active') ? ['force_active' => __('Forced'),] : []),
-                ($goodie_enabled ? ['tshirt' => ($goodie_tshirt ? __('T-shirt') : __('Goodie'))] : []),
+                ($goodie_enabled ? ['tshirt' => __('Goodie')] : []),
                 [
                     'actions' => __('general.actions'),
                 ]
             ),
             $matched_users
         ),
-        $goodie_enabled ? '<h2>' . ($goodie_tshirt ? __('T-shirt statistic') : __('Goodie statistic')) . '</h2>' : '',
+        $goodie_enabled ? '<h2>' . __('Goodie statistic') . '</h2>' : '',
         $goodie_enabled ? table(array_merge(
             ($goodie_tshirt ? ['size' => __('Size')] : []),
-            ['given' => $goodie_tshirt ? __('Given T-shirts') : __('Given goodies')]
+            ['given' => __('Given goodies')],
+            $goodie_tshirt ? ['total' => __('Configured T-shirts')] : [],
         ), $goodie_statistics) : '',
     ]);
 }

@@ -20,6 +20,7 @@ use Engelsystem\Models\User\Contact;
 use Engelsystem\Models\User\PersonalData;
 use Engelsystem\Models\User\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 
 class ShiftsControllerTest extends ApiBaseControllerTest
 {
@@ -88,7 +89,6 @@ class ShiftsControllerTest extends ApiBaseControllerTest
     {
         /** @var ShiftEntry $firstEntry */
         $firstEntry = $this->shiftB->shiftEntries->first();
-
         $request = new Request();
         $request = $request->withAttribute('angeltype_id', $firstEntry->angelType->id);
 
@@ -241,9 +241,17 @@ class ShiftsControllerTest extends ApiBaseControllerTest
             'location_id' => $this->location->id,
         ]);
 
-        (new ScheduleShift(['shift_id' => $this->shiftB->id, 'schedule_id' => $this->schedule1->id, 'guid' => 'a']))
+        (new ScheduleShift([
+            'shift_id' => $this->shiftB->id,
+            'schedule_id' => $this->schedule1->id,
+            'guid' => Str::uuid(),
+        ]))
             ->save();
-        (new ScheduleShift(['shift_id' => $this->shiftC->id, 'schedule_id' => $this->schedule2->id, 'guid' => 'b']))
+        (new ScheduleShift([
+            'shift_id' => $this->shiftC->id,
+            'schedule_id' => $this->schedule2->id,
+            'guid' => Str::uuid(),
+        ]))
             ->save();
 
         // "Empty" entry to be skipped
@@ -279,16 +287,18 @@ class ShiftsControllerTest extends ApiBaseControllerTest
         ShiftEntry::factory(2)->create([
             'shift_id' => $this->shiftB->id,
             'angel_type_id' => $byLocation->angel_type_id,
+            'freeloaded_by' => null,
         ]);
 
         // By shift type via schedule
         ShiftEntry::factory(3)->create([
             'shift_id' => $this->shiftC->id,
             'angel_type_id' => $byShiftType->angel_type_id,
+            'freeloaded_by' => null,
         ]);
 
         // Additional (not required by shift nor location)
-        ShiftEntry::factory(5)->create(['shift_id' => $this->shiftA->id]);
+        ShiftEntry::factory(5)->create(['shift_id' => $this->shiftA->id, 'freeloaded_by' => null]);
 
         foreach (User::all() as $user) {
             // Generate user data

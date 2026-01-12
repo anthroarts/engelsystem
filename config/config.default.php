@@ -14,7 +14,7 @@ return [
         'password' => env_secret('MYSQL_PASSWORD', ''),
     ],
 
-    // For accessing /metrics (and /stats)
+    // For accessing /metrics
     'api_key'                 => env('API_KEY', ''),
 
     // Enable maintenance mode (show a static page to all users)
@@ -135,17 +135,28 @@ return [
             'enable_password' => false,
             // Allow registration even if disabled in config (optional)
             'allow_registration' => null,
+            // Allow disconnecting user accounts from the oauth provider (optional)
+            'allow_user_disconnect' => true,
             // Auto join teams
             // Info groups field (optional)
             'groups' => 'groups',
-            // Groups to team (angeltype) mapping (optional)
+            // Groups to team (angel type) mapping (optional)
             'teams' => [
-                '/Lorem' => 4, // 4 being the ID of the team (angeltype)
-                '/Foo Mod' => ['id' => 5, 'supporter' => true], // 5 being the ID of the team (angeltype)
+                '/Lorem' => 4, // 4 being the ID of the team (angel type)
+                '/Foo Mod' => ['id' => 5, 'supporter' => true], // 5 being the ID of the team (angel type)
             ],
         ],
         */
     ],
+
+    // Random, long (at least 32 characters) alphanumeric or base64 encoded key, used for signing
+    'app_key' => env_secret('APP_KEY'),
+
+    // see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
+    'jwt_algorithm' => env('JWT_ALGORITHM', 'HS256'),
+
+    // Number of minutes after a JWT must expire for example max angel type join time
+    'jwt_expiration_time' => env('JWT_EXPIRATION_TIME', 60 * 24 * 7),
 
     // Default theme, 1 = theme1.scss etc.
     'theme'                   => env('THEME', 1),
@@ -153,6 +164,16 @@ return [
     // Supported themes
     // To disable a theme in config.php, you can set its value to null
     'themes' => [
+        20 => [
+            'name' => 'Engelsystem eh22-light (2025)',
+            'type' => 'light',
+            'navbar_classes' => 'navbar-light',
+        ],
+        19 => [
+            'name' => 'Engelsystem eh22-dark (2025)',
+            'type' => 'dark',
+            'navbar_classes' => 'navbar-dark',
+        ],
         18 => [
             'name' => 'Engelsystem 38c3 (2024) - Lila, Lachs und Kurven',
             'type' => 'dark',
@@ -251,11 +272,14 @@ return [
     ],
 
     // Redirect to this site after logging in or when clicking the page name
-    // Must be one of news, meetings, user_shifts, angeltypes, questions
+    // Must be one of news, meetings, user_shifts, angel types, questions
     'home_site'               => env('HOME_SITE', 'news'),
 
-    // Number of News shown on one site and for feed readers (minimum 1)
+    // Number of news shown on one site and for feed readers (minimum 1)
     'display_news'            => env('DISPLAY_NEWS', 10),
+
+    // Number of users shown on one admin page table
+    'display_users'           => env('DISPLAY_USERS', 100),
 
     // Users are able to sign up
     'registration_enabled'    => (bool) env('REGISTRATION_ENABLED', true),
@@ -273,13 +297,16 @@ return [
         'dect'               => (bool) env('DECT_REQUIRED', false),
     ],
 
+    // Allow joining angel type via generated QR code
+    'join_qr_code'            => (bool) env('JOIN_QR_CODE', true),
+
     // Only arrived users can sign up for shifts
     'signup_requires_arrival' => (bool) env('SIGNUP_REQUIRES_ARRIVAL', false),
 
     // Whether newly-registered users should automatically be marked as arrived
     'autoarrive'              => (bool) env('AUTOARRIVE', false),
 
-    // Supporters of a team (angeltype) can promote other users of the team (angeltype) to supporter
+    // Supporters of a team (angel type) can promote other users of the team (angel type) to supporter
     'supporters_can_promote' => (bool) env('SUPPORTERS_CAN_PROMOTE', false),
 
     // Only allow shift signup this number of hours in advance
@@ -337,6 +364,9 @@ return [
     // Whether force active should be enabled
     'enable_force_active' => (bool) env('ENABLE_FORCE_ACTIVE', true),
 
+    // Whether force food should be enabled
+    'enable_force_food' => (bool) env('ENABLE_FORCE_FOOD', false),
+
     // Allow users with sufficient permission to add worklogs for themselves
     'enable_self_worklog' => (bool) env('ENABLE_SELF_WORKLOG', true),
 
@@ -358,7 +388,7 @@ return [
     // Local timezone
     'timezone'                => env('TIMEZONE', 'America/Los_Angeles'),
 
-    // Multiply 'night shifts' and freeloaded shifts (start or end between 2 and 8 exclusive) by 2 in goodie score
+    // Multiply 'night shifts' between start and end (numbers as hours) by multiplier in goodie score
     // Goodies must be enabled to use this feature
     'night_shifts'            => [
         'enabled'    => (bool) env('NIGHT_SHIFTS', true), // Disable to weigh every shift the same
@@ -394,7 +424,7 @@ return [
     // The default locale to use
     'default_locale'          => env('DEFAULT_LOCALE', 'en_US'),
 
-    // Available T-Shirt sizes
+    // Available T-shirt sizes
     // To disable a t-shirt size in config.php, you can set its value to null
     'tshirt_sizes'            => [
         'S'    => 'Small Straight-Cut',

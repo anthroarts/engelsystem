@@ -191,6 +191,9 @@ msgstr "FAQ entry successfully deleted."
 msgid "faq.edit.success"
 msgstr "FAQ entry successfully updated."
 
+msgid "question.menu"
+msgstr "Ask the Heaven"
+
 msgid "question.delete.success"
 msgstr "Question deleted successfully."
 
@@ -199,6 +202,15 @@ msgstr "Question added successfully."
 
 msgid "question.edit.success"
 msgstr "Question updated successfully."
+
+msgid "tag.edit.duplicate"
+msgstr "A tag with the name already exists!"
+
+msgid "tag.edit.success"
+msgstr "Tag updated successfully."
+
+msgid "tag.delete.success"
+msgstr "Tag deleted successfully."
 
 msgid "notification.news.new"
 msgstr "New news: %s"
@@ -236,6 +248,9 @@ msgstr "You have been added as an %1$s by a supporter."
 msgid "notification.angeltype.added.text"
 msgstr "You can find a description at %2$s"
 
+msgid "angeltype.add.success"
+msgstr "Successfully joined angel type"
+
 msgid "notification.shift.deleted"
 msgstr "Your Shift was deleted"
 
@@ -267,6 +282,9 @@ msgstr "Work log successfully updated."
 
 msgid "worklog.delete.success"
 msgstr "Work log successfully deleted."
+
+msgid "voucher.save.success"
+msgstr "Saved the number of vouchers."
 
 msgid "location.edit.success"
 msgstr "Location edited successfully."

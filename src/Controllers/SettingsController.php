@@ -112,8 +112,8 @@ class SettingsController extends BaseController
 
         if (
             $goodie_tshirt
-            && (isset(config('tshirt_sizes')[$data['shirt_size'] ?? '']) || is_null($data['shirt_size']))
             && !$user->state->got_goodie
+            && (isset(config('tshirt_sizes')[$data['shirt_size'] ?? '']) || is_null($data['shirt_size']))
         ) {
             $user->personalData->shirt_size = $data['shirt_size'];
         }
@@ -146,7 +146,7 @@ class SettingsController extends BaseController
         $minLength = config('password_min_length');
         $data = $this->validate($request, [
             'password'      => empty($user->password) ? 'optional' : 'required',
-            'new_password'  => 'required|min:' . $minLength,
+            'new_password'  => 'required|length:' . $minLength,
             'new_password2' => 'required',
         ]);
 
@@ -423,8 +423,9 @@ class SettingsController extends BaseController
 
     protected function checkOauthHidden(): bool
     {
-        foreach (config('oauth') as $config) {
-            if (empty($config['hidden'])) {
+        $userServices = $this->auth->user()->oauth;
+        foreach (config('oauth') as $name => $config) {
+            if (empty($config['hidden']) || $userServices->contains('provider', $name)) {
                 return false;
             }
         }

@@ -1,6 +1,6 @@
-{% macro angel() %}
+{% macro angel() -%}
     <span class="icon-icon_angel"></span>
-{% endmacro %}
+{%- endmacro %}
 
 {% macro icon(icon, color) %}
     <span class="bi bi-{{ icon }} {% if color %} text-{{ color }} {% endif %}"></span>
@@ -26,12 +26,27 @@
     <a href="{{ opt.url|default(url('/users', {'action': 'view', 'user_id': user.id})) }}"
             {%- if not user.state.arrived %} class="text-muted"{% endif -%}
     >
-        {{ _self.angel() }} {{ user.displayName }}
+        {{ _self.angel() }}&nbsp;{{ user.displayName }}
         {%- if opt.pronoun|default(false) and config('enable_pronoun')
             and user.personalData.pronoun %}
             ({{ user.personalData.pronoun }})
         {% endif -%}
     </a>
+{% endmacro %}
+
+{% macro user_info(user, opt) %}
+    {% if user.state.user_info and can('admin_arrive') %}
+        <span
+        {% if can('user.info.hint') %}
+            data-bs-toggle="tooltip"
+            {% if can('user.info.view') %}
+                title="{{ user.state.user_info|escape('html_attr') }}"
+            {% endif %}
+        {% endif %}
+        >
+            {{ _self.icon('info-circle-fill', 'info') }}
+        </span>
+    {% endif %}
 {% endmacro %}
 
 {% macro button(label, url, opt) %}
@@ -59,7 +74,7 @@
 {% endmacro %}
 
 {% macro add(url, opt) %}
-    {{ _self.button(_self.icon('plus-lg'), url, {'title': __('general.add')}|merge(opt|default({}))) }}
+    {{ _self.button(_self.icon('plus-lg'), url, {'size': 'sm', 'title': __('general.add')}|merge(opt|default({}))) }}
 {% endmacro %}
 
 {% macro info(text, raw) %}

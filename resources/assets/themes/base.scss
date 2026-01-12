@@ -148,6 +148,13 @@ table .border-bottom {
   padding: 0 2px;
 }
 
+table.table-sticky-header thead {
+  position: sticky;
+  top: 57px;
+  z-index: $zindex-sticky;
+  background-color: var(--es-table-sticky-bg, var(--bs-body-bg));
+}
+
 .stats {
   font-size: 20px;
   height: 150px;
@@ -195,7 +202,7 @@ table .border-bottom {
 
 // prevent dropdown-menu from overflowing the view
 .dropdown-menu {
-  max-height: calc(100vh - 300px); // 300px: menu offset
+  max-height: 100dvh;
   overflow: auto;
 
   // Show above shifts headers
@@ -206,6 +213,17 @@ table .border-bottom {
   .dropdown-menu {
     max-height: calc(100vh - $navbar-height - 16px); // 16px extra padding
   }
+}
+
+/* make selections scrollable and add a max height of 4.5 entries */
+#collapseShiftsFilterSelect .selection {
+  overflow-y: auto;
+  max-height: ($form-check-min-height + $form-check-margin-bottom) * 4.5;
+}
+
+/* add divider between sorting groups of angel types selection */
+#angel_types_selection_hr {
+  margin: 0;
 }
 
 .selection .checkbox {
@@ -289,6 +307,17 @@ table .border-bottom {
   text-align: right;
 }
 
+.column_shift_info:not(:hover) .table-myshifts-shift-info-limit-height {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+
+  @media (min-width: map-get($grid-breakpoints, 'lg')) {
+    -webkit-line-clamp: 4;
+  }
+}
+
 h1,
 h2,
 h3,
@@ -350,6 +379,10 @@ h6,
 
 .ref-id[id] {
   padding-top: 3em;
+}
+
+.table-sticky-header .ref-id[id] {
+  padding-top: 7em;
 }
 
 // Cards
@@ -420,6 +453,22 @@ code {
 
 .btn-group .btn {
   border-radius: inherit;
+}
+
+blockquote {
+  border-left: 0.2em solid $primary;
+  padding-left: 0.5em;
+}
+
+/* center buttons in titles */
+h1 {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+
+  & .btn {
+    align-self: center;
+  }
 }
 
 /* Hide the arrow up/down buttons rendered by the browser in the input field */

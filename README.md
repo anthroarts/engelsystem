@@ -48,4 +48,4 @@ aws ecs update-service --force-new-deployment --service engelsystem --cluster Fa
 
 ## Github pushing to Prod AWS
 
-As soon as you push (or merge to) main, this will automatically kick off a build and upload it to Prod AWS. After a few minutes the changes will be live on https://engelsystem.anthroarts.org!
+Pushing (or merging) to `main` runs the CI checks. Once they all pass, GitHub Actions builds the Docker image and deploys to Prod AWS. Failed checks block deployment. See [DEVELOPMENT.md](DEVELOPMENT.md#ci--build-pipeline) for the checks and required status-check setting.

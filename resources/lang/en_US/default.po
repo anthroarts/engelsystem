@@ -597,7 +597,9 @@ msgid "faq.faq"
 msgstr "FAQ"
 
 msgid "faq.questions_link"
-msgstr "If you don't find an answer, you can <a href=\"%s\">ask your lead</a>. (But this has been turned off in this edition.)"
+msgstr ""
+"If you don't find an answer, you can <a href=\"%s\">ask your lead</a>. "
+"(But this has been turned off in this edition.)"
 
 msgid "faq.edit"
 msgstr "Edit FAQ entry"
@@ -674,9 +676,6 @@ msgstr "To Conversation"
 msgid "message.message"
 msgstr "Message"
 
-msgid "angel"
-msgstr "Volunteer"
-
 msgid "worklog.add"
 msgstr "Add work log"
 
@@ -738,9 +737,6 @@ msgid "angeltypes.hide_on_shift_view.info"
 msgstr "If checked only admins and members of the volunteer type "
 "can see the filter option for this volunteer type on the shifts page"
 
-msgid "registration.register"
-msgstr "Register"
-
 msgid "location.location"
 msgstr "Location"
 
@@ -792,9 +788,6 @@ msgstr "Day %1$d"
 msgid "Angel not found."
 msgstr "Volunteer not found.."
 
-msgid "Angel has been marked as not active."
-msgstr "Volunteer has been marked as not active."
-
 msgid "Angel has got a t-shirt."
 msgstr "Volunteer has got a t-shirt."
 
@@ -821,13 +814,6 @@ msgstr "All volunteers"
 
 msgid "Angel registration successful!"
 msgstr "Volunteer registration successful!"
-
-msgid ""
-"By completing this form you're registering as a Chaos-Angel. This script "
-"will create you an account in the angel task scheduler."
-msgstr ""
-By completing this form you're registering as a volunteer. This script "
-"will create you an account in the volunteer task scheduler."
 
 msgid ""
 "Angel types which require introduction can only be used by an angel if "
@@ -1072,7 +1058,8 @@ msgstr ""
 msgid ""
 "If the angel is active, it can claim a T-shirt. If T-shirt is set to 'Yes', the angel already got their T-shirt."
 msgstr ""
-"If the volunteer is active, they can claim a T-shirt. If T-shirt is set to 'Yes', the volunteer already got their T-shirt."
+"If the volunteer is active, they can claim a T-shirt. "
+"If T-shirt is set to 'Yes', the volunteer already got their T-shirt."
 
 msgid ""
 "If the angel was Active, this entitles him to a T-shirt. If T-shirt contains a 'Ja', "
@@ -1094,13 +1081,19 @@ msgid "You cannot edit angels with more rights."
 msgstr "You cannot edit volunteers with more rights."
 
 msgid "If the angel is active, it can claim a goodie. If goodie is set to 'Yes', the angel already got their goodie."
-msgstr "If the volunteer is active, they can claim a goodie. If goodie is set to 'Yes', the volunteer already got their goodie."
+msgstr ""
+"If the volunteer is active, they can claim a goodie. "
+"If goodie is set to 'Yes', the volunteer already got their goodie."
 
 msgid "angel"
 msgstr "volunteer"
 
-msgid "By completing this form you're registering as a Chaos-Angel. This script will create you an account in the angel task scheduler."
-msgstr "By completing this form you're registering as a volunteer for FC. This script will create you an account in the volunteer task scheduler."
+msgid ""
+"By completing this form you're registering as a Chaos-Angel. "
+"This script will create you an account in the angel task scheduler."
+msgstr ""
+"By completing this form you're registering as a volunteer for FC. "
+"This script will create you an account in the volunteer task scheduler."
 
 msgid "login.welcome"
 msgstr "Welcome to Further Confusion's Engelsystem! We're glad you're here!"
@@ -1152,7 +1145,9 @@ msgid "password.reset.title"
 msgstr "Password reset"
 
 msgid "password.recovery.text"
-msgstr "Enter your email address below. If the system can send out emails (not likely) and if your email is registered, a message will go out."
+msgstr ""
+"Enter your email address below. If the system can send out emails (not likely) "
+"and if your email is registered, a message will go out."
 
 msgid "Take needed angels from location settings"
 msgstr "Take needed volunteers from location settings"
@@ -1254,9 +1249,6 @@ msgstr "Copy needed volunteers from shift type settings"
 
 msgid "Angel has been marked as active."
 msgstr "Volunteer has been marked as active."
-
-msgid "Angel has been marked as not active."
-msgstr "Volunteer has been marked as not active."
 
 msgid "Angel has been marked as arrived."
 msgstr "Volunteer has been marked as arrived."

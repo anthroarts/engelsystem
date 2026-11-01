@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Engelsystem\Migrations;
 
 use Engelsystem\Database\Migration\Migration;
-use Illuminate\Database\Connection;
 use Exception;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Builder as SchemaBuilder;
 
 // The following groups currently exist
@@ -22,7 +22,7 @@ use Illuminate\Database\Schema\Builder as SchemaBuilder;
 // Welcome Angel
 
 // At present, the group rights are desync'ed from this file.  As such, disabling the file's
-// control over permissions.  
+// control over permissions.
 class SetupFcGroupPermissions extends Migration
 {
     protected Connection $db;
@@ -60,9 +60,9 @@ class SetupFcGroupPermissions extends Migration
         // user.goodie.edit, user_meetings, user_messages, voucher.edit
 
         // We are going to rename unused_1 to Admin, though
-        $this->renameGroup("unused_1", "Admin");
+        $this->renameGroup('unused_1', 'Admin');
         // And GoFur to Volunteer
-        $this->removeGroupPrivilege("GoFur", "Volunteer")
+        $this->removeGroupPrivilege('GoFur', 'Volunteer');
     }
 
     private function upAngelGroup(): void
@@ -182,26 +182,12 @@ class SetupFcGroupPermissions extends Migration
         // admin_groups, admin_user, config.edit
     }
 
-    private function renameGroup($groupNameOld, $groupNameNew): void
+    private function renameGroup(string $groupNameOld, string $groupNameNew): void
     {
-        $angel_group = $this->db->table('groups')->where('name', $groupNameOld)->update(['name' => $groupNameNew]);
+        $this->db->table('groups')->where('name', $groupNameOld)->update(['name' => $groupNameNew]);
     }
 
-    private function removeGroupPrivilege($group_name, $privilege_name): void {
-        $group = $this->db->table('groups')->where('name', $group_name)->first();
-        if (!$group) {
-            return;
-        }
-
-        $privilege = $this->db->table('privileges')->where('name', $privilege_name)->first();
-        if(!$privilege) {
-            return;
-        }
-
-        $this->db->table('group_privileges')->where('group_id', $group->id)->where('privilege_id', $privilege->id)->delete();
-    }
-
-    private function addGroupPrivilege($group_name, $privilege_name): void
+    private function removeGroupPrivilege(string $group_name, string $privilege_name): void
     {
         $group = $this->db->table('groups')->where('name', $group_name)->first();
         if (!$group) {
@@ -209,7 +195,25 @@ class SetupFcGroupPermissions extends Migration
         }
 
         $privilege = $this->db->table('privileges')->where('name', $privilege_name)->first();
-        if(!$privilege) {
+        if (!$privilege) {
+            return;
+        }
+
+        $this->db->table('group_privileges')
+            ->where('group_id', $group->id)
+            ->where('privilege_id', $privilege->id)
+            ->delete();
+    }
+
+    private function addGroupPrivilege(string $group_name, string $privilege_name): void
+    {
+        $group = $this->db->table('groups')->where('name', $group_name)->first();
+        if (!$group) {
+            return;
+        }
+
+        $privilege = $this->db->table('privileges')->where('name', $privilege_name)->first();
+        if (!$privilege) {
             return;
         }
 

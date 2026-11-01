@@ -12,9 +12,7 @@
 name: Deploy to Amazon ECS
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
 
 env:
   # These values come from https://github.com/anthroarts/fargate-infrastructure
@@ -50,14 +48,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c # v4
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.AWS_ROLE }}
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -79,7 +77,8 @@ jobs:
 
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition $TASK_DEFINITION_FAMILY --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition $TASK_DEFINITION_FAMILY \
+            --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         if: env.WRITE_NEW_TASK_DEFINITION_TAG == 'true'
@@ -93,7 +92,9 @@ jobs:
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: ${{ env.WRITE_NEW_TASK_DEFINITION_TAG == 'true' && steps.task-def.outputs.task-definition || 'task-definition.json' }}
+          task-definition: >-
+            ${{ env.WRITE_NEW_TASK_DEFINITION_TAG == 'true' &&
+                steps.task-def.outputs.task-definition || 'task-definition.json' }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true

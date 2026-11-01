@@ -195,6 +195,22 @@ Please config POEdit to extract also the twig template files using the following
 
 ## CI & Build Pipeline
 
+GitHub Actions runs the PHP unit and feature suites, PHP_CodeSniffer, PHPStan,
+frontend linting, translation validation, and the production asset build on pull requests and pushes to `main`.
+It uses PHP 8.3 and Node.js 20 to match the application Dockerfile, with a disposable
+MariaDB database for feature tests and in-memory SQLite for database-backed unit tests.
+PHPUnit results are available as the `phpunit-results` workflow artifact.
+The `lint:ec` script pins the EditorConfig checker binary because the JavaScript
+wrapper in the lockfile cannot download releases using the new binary names.
+
+Require the **CI** status check in the GitHub ruleset for `main` to prevent merging
+changes with failed or skipped checks. This final check aggregates the PHP and
+frontend jobs and also runs for merge queues. The ECS deployment workflow can only
+be called by another workflow; CI calls it after all checks pass on a push to `main`.
+Pull requests and merge queues never deploy.
+
+### GitLab
+
 The Engelsystem can be tested and automatically deployed to a testing/staging/production environment.
 This functionality requires a [GitLab](https://about.gitlab.com/) server with a working docker runner.
 

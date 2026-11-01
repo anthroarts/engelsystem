@@ -93,7 +93,7 @@ return [
             'first_name' => 'firstName',
             'last_name' => 'lastName',
             'hidden' => empty(env('OAUTH_URL_AUTHORIZE', null)),
-        ]
+        ],
         // '[name]' => [config]
         /*
         '[name]' => [
